@@ -1,0 +1,2 @@
+language = "cpp"
+run = " cd 'programming principle with c++'; cd ch17;  g++ -o vector1 vector1.cpp; ./vector1"
