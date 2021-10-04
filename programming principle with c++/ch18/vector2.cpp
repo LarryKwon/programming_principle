@@ -18,7 +18,7 @@ class vector{
       }
 
     vector(initializer_list<double>lst)
-      :sz{lst.size()},elem{new double[sz]}{
+      :sz{(int)lst.size()},elem{new double[sz]}{
         copy(lst.begin(),lst.end(),elem);
       }
 
@@ -68,7 +68,7 @@ vector& vector::operator=(vector&& a){
   return *this;
 }
 
-int main(){
+// int main(){
 
-  return 0;
-}
+//   return 0;
+// }

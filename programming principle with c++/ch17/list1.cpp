@@ -96,30 +96,30 @@ void print_all(Link* p){
   cout << " }";
 }
 
-int main(){
-  Link* norse_gods = new Link{"Thor"};
-  norse_gods = norse_gods -> insert(new Link{"Odin"});
-  norse_gods = norse_gods -> insert(new Link{"Zeus"});
-  norse_gods = norse_gods -> insert(new Link{"Freia"});
+// int main(){
+//   Link* norse_gods = new Link{"Thor"};
+//   norse_gods = norse_gods -> insert(new Link{"Odin"});
+//   norse_gods = norse_gods -> insert(new Link{"Zeus"});
+//   norse_gods = norse_gods -> insert(new Link{"Freia"});
 
-  Link* greek_gods = new Link{"Hera"};
-  greek_gods = greek_gods -> insert(new Link{"Athena"});
-  greek_gods = greek_gods -> insert(new Link{"Mars"});
-  greek_gods = greek_gods -> insert(new Link{"Poseidon"});
+//   Link* greek_gods = new Link{"Hera"};
+//   greek_gods = greek_gods -> insert(new Link{"Athena"});
+//   greek_gods = greek_gods -> insert(new Link{"Mars"});
+//   greek_gods = greek_gods -> insert(new Link{"Poseidon"});
 
-  Link* p1 = greek_gods -> find("Mars");
-  if(p1) p1->value = "Ares";
+//   Link* p1 = greek_gods -> find("Mars");
+//   if(p1) p1->value = "Ares";
 
-  Link* p2 = norse_gods -> find("Zeus");
+//   Link* p2 = norse_gods -> find("Zeus");
 
-  if(p2){
-    if(p2==norse_gods) norse_gods = p2->next();
-    p2 -> erase();
-    greek_gods = greek_gods->insert(p2);
-  }
+//   if(p2){
+//     if(p2==norse_gods) norse_gods = p2->next();
+//     p2 -> erase();
+//     greek_gods = greek_gods->insert(p2);
+//   }
 
-  print_all(norse_gods);
-  print_all(greek_gods);
+//   print_all(norse_gods);
+//   print_all(greek_gods);
 
-  return 0;
-}
+//   return 0;
+// }

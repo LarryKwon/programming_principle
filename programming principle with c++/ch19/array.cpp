@@ -25,9 +25,9 @@ template<typename C> void printout(const C& c){
   for(int i = 0; i<c.size();++i) cout << c[i] << '\n';
 }
 
-int main(){
-  array<int,256> gb;
-  array<double,6> ad = {0.0,1.1,2.2,3.3,4.4,5.5};
-  const int max = 1024;
+// int main(){
+//   array<int,256> gb;
+//   array<double,6> ad = {0.0,1.1,2.2,3.3,4.4,5.5};
+//   const int max = 1024;
 
-}
+// }

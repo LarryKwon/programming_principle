@@ -127,7 +127,7 @@ template<typename T,typename A> T& vector<T,A>::at(int n){
 
 
 
-int main(){
+// int main(){
 
-  return 0;
-}
+//   return 0;
+// }

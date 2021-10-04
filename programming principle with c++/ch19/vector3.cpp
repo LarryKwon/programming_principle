@@ -19,7 +19,7 @@ class vector{
       }
 
     vector(initializer_list<double>lst)
-      :sz{lst.size()},elem{new double[sz]}{
+      :sz{(int)lst.size()},elem{new double[sz]}{
         copy(lst.begin(),lst.end(),elem);
       }
     
@@ -110,7 +110,7 @@ void vector::push_back(double d){
 
 
 
-int main(){
+// int main(){
 
-  return 0;
-}
+//   return 0;
+// }

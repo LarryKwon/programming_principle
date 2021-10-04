@@ -159,7 +159,7 @@ typename vector<T,A>::iterator vector<T,A>::insert(iterator p,const T& val){
 }
 
 
-int main(){
+// int main(){
 
-  return 0;
-}
+//   return 0;
+// }
