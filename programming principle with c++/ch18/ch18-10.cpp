@@ -6,8 +6,7 @@
 
 using namespace std;
 
-istream& read_word(istream& is, char* buffer, int max) {
-    is.width(max);
+istream& read_word(istream& is, string& buffer) {
     is >> buffer;
     return is;
 }
@@ -55,13 +54,8 @@ bool is_palindrome(const char* first, const char* last){
 
 int main(){
   const int max = 128;
-  for(char s[max]; read_word(cin,s,max);){
-    char* p = (char*)s;
-    int length = 0;
-    while(*p!=0){
-      length += 1;
-      p++;
-    }
+  for(string s; read_word(cin,s);){
+    int length = s.length();
     cout << s << " is";
     if(!is_palindrome(&s[0],&s[length-1])) cout << " not";
     cout << " a palindrome\n";
