@@ -53,10 +53,12 @@ Iter2 cpy(Iter1 f1, Iter1 e1, Iter2 f2){
 }
 
 int main(){
-  array<int,10> a_array;
-  for(int i = 0; i<10; i++){
-    a_array[i] = i;
-  }
+  array<int,10> a_array{0,1,2,3,4,5,6,7,8,9};
+  // for(int i = 0; i<10; i++){
+  //   a_array[i] = i;
+  // }
+  print(a_array.begin(),a_array.end(),"a_array");
+
   vector<int> a_vec{0,1,2,3,4,5,6,7,8,9};
   print(a_vec.begin(),a_vec.end(),"a_vec");
   list<int> a_list{0,1,2,3,4,5,6,7,8,9};
