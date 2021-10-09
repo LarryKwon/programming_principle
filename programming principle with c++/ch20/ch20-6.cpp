@@ -104,6 +104,7 @@ struct Document{
     const string& find_str, const string& repl_str);
 
   Text_iterator erase(Text_iterator p);  
+  Text_iterator insert(Text_iterator p, const char& c);
 };
 
 Text_iterator Document::erase(Text_iterator p){
@@ -111,6 +112,14 @@ Text_iterator Document::erase(Text_iterator p){
   list<Line>::iterator list_it = p.get_line();
   Line::iterator line_it = p.get_pos();
   line_it = (*list_it).erase(line_it);
+  return Text_iterator(list_it, line_it);
+}
+
+Text_iterator Document::insert(Text_iterator p,const char& c){
+  if(p == end()) return p;
+  list<Line>::iterator list_it = p.get_line();
+  Line::iterator line_it = p.get_pos();
+  line_it = (*list_it).insert(line_it,c);
   return Text_iterator(list_it, line_it);
 }
 
@@ -129,7 +138,7 @@ void Document::find_replace(Text_iterator first, Text_iterator last, const strin
     int repl_length = repl_str.size();
     cout << find_length << repl_length;
 
-    if(find_length >= repl_length){
+    while(repl_start != repl_str.end() && find_start != find_str.end()){
       while(repl_start != repl_str.end()){
         // if(*repl_start == '\n')
         // if(*find_start == '\n')
@@ -138,33 +147,26 @@ void Document::find_replace(Text_iterator first, Text_iterator last, const strin
         ++find_start;
         ++pos;
       }
+    }
 
+    if(find_length >= repl_length){
       while(find_start != find_str.end()){
-        erase(pos);
+        pos = erase(pos);
         ++find_start;
       }
     }
     //case:: 바꾸는게 더 길 수도 -> 추가되는 부분을 추가
     // 바꾸다가 줄이 바뀌면..?
     // -> find에서 줄 바꿈 or 찾은거에서 줄 바꿈
-    /*
-    if(find_length < repl_length){
-      while(find_start != find_str.end()){
-        if(*repl_start == '\n')
-        if(*find_start == '\n')
-        *pos = *repl_start;
-        ++repl_start;
-        ++find_start;
-        ++pos;
-      }
-
+    else{
         while(repl_start != repl_str.end()){
         if((*repl_start)=='\n'){ }
-        erase(pos);
+        pos = insert(pos,*repl_start);
+        ++pos;
         ++repl_start;
       }
     }
-    */
+
     pos = find_txt(pos,last,find_str);
   }
 }
@@ -238,9 +240,9 @@ try {
     // else
     //     print(my_doc,p);
 
-    cout << "Replace 'dolor' with 'FR':\n\n";
+    cout << "Replace 'dolor' with 'FRFRITZLI':\n\n";
     string f_str = "dolor";
-    string r_str = "FR";
+    string r_str = "FRFRITZLI";
     my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
     print(my_doc,my_doc.begin());
 
