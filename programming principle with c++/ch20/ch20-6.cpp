@@ -42,11 +42,13 @@ class Text_iterator {
     Text_iterator& operator++();
     
     bool operator==(const Text_iterator& other) const
-    { return ln == other.ln && pos == other.pos; }
+    { return ln==other.ln && pos==other.pos; }
 
     bool operator!=(const Text_iterator& other) const 
-    { return ln != other.ln && pos != other.pos; }
+    {return !(*this==other); }
 
+    list<Line>::iterator get_line(){ return ln; }
+    Line::iterator get_pos() {return pos;}
 };
 
 Text_iterator& Text_iterator::operator++(){
@@ -83,6 +85,8 @@ namespace ch20{
     }
     return true;
   }
+}
+Text_iterator find_txt(Text_iterator first, Text_iterator last, const string& find_str);
 
 struct Document{
   list<Line> line;
@@ -98,10 +102,71 @@ struct Document{
   
   void find_replace(Text_iterator first, Text_iterator last,
     const string& find_str, const string& repl_str);
+
+  Text_iterator erase(Text_iterator p);  
 };
 
+Text_iterator Document::erase(Text_iterator p){
+  if(p == end()) return p;
+  list<Line>::iterator list_it = p.get_line();
+  Line::iterator line_it = p.get_pos();
+  line_it = (*list_it).erase(line_it);
+  return Text_iterator(list_it, line_it);
+}
+
+void print(Document& d);
+
+void print(Document& d, Text_iterator p);
+
+
 void Document::find_replace(Text_iterator first, Text_iterator last, const string& find_str, const string& repl_str){
-  
+  if(find_str == "") return ;
+  Text_iterator pos = find_txt(first,last,find_str);
+  while (pos!=last) {
+    string::const_iterator repl_start = repl_str.begin();
+    string::const_iterator find_start = find_str.begin();
+    int find_length = find_str.size();
+    int repl_length = repl_str.size();
+    cout << find_length << repl_length;
+
+    if(find_length >= repl_length){
+      while(repl_start != repl_str.end()){
+        // if(*repl_start == '\n')
+        // if(*find_start == '\n')
+        *pos = *repl_start;
+        ++repl_start;
+        ++find_start;
+        ++pos;
+      }
+
+      while(find_start != find_str.end()){
+        erase(pos);
+        ++find_start;
+      }
+    }
+    //case:: 바꾸는게 더 길 수도 -> 추가되는 부분을 추가
+    // 바꾸다가 줄이 바뀌면..?
+    // -> find에서 줄 바꿈 or 찾은거에서 줄 바꿈
+    /*
+    if(find_length < repl_length){
+      while(find_start != find_str.end()){
+        if(*repl_start == '\n')
+        if(*find_start == '\n')
+        *pos = *repl_start;
+        ++repl_start;
+        ++find_start;
+        ++pos;
+      }
+
+        while(repl_start != repl_str.end()){
+        if((*repl_start)=='\n'){ }
+        erase(pos);
+        ++repl_start;
+      }
+    }
+    */
+    pos = find_txt(pos,last,find_str);
+  }
 }
 
 istream& operator>>(istream& is,Document& d){
@@ -123,9 +188,6 @@ void print(Document& d)
 void print(Document& d, Text_iterator p){
   for(;p!=d.end();++p)cout << *p;
   cout << '\n';
-}
-
-
 }
 
 Text_iterator find_txt(Text_iterator first, Text_iterator last, const string& find_str){
@@ -158,29 +220,29 @@ try {
     if (!ifs) error("can't open file ",ifname);
     Document my_doc;
     ifs >> my_doc;
-    print(my_doc,my_doc.begin());
-
-    cout << "Searching for non-existing string 'wrong':\n\n";
-    string f_str = "wrong";
-    Text_iterator p = find_txt(my_doc.begin(),my_doc.end(),f_str);
-    if (p==my_doc.end())
-        cout << "not found";
-    else
-        print(my_doc,p);
-
-    cout << "\n\nSearching for 'Proin\\neget':\n\n";
-    f_str = "Proin\neget";
-    p = find_txt(my_doc.begin(),my_doc.end(),f_str);
-    if (p==my_doc.end())
-        cout << "not found";
-    else
-        print(my_doc,p);
-
-    // cout << "Replace 'dolor' with 'FRITZLI':\n\n";
-    // f_str = "dolor";
-    // string r_str = "FRITZLI";
-    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
     // print(my_doc,my_doc.begin());
+
+    // cout << "Searching for non-existing string 'wrong':\n\n";
+    // string f_str = "wrong";
+    // Text_iterator p = find_txt(my_doc.begin(),my_doc.end(),f_str);
+    // if (p==my_doc.end())
+    //     cout << "not found";
+    // else
+    //     print(my_doc,p);
+
+    // cout << "\n\nSearching for 'Proin\\neget':\n\n";
+    // f_str = "Proin\neget";
+    // p = find_txt(my_doc.begin(),my_doc.end(),f_str);
+    // if (p==my_doc.end())
+    //     cout << "not found";
+    // else
+    //     print(my_doc,p);
+
+    cout << "Replace 'dolor' with 'FR':\n\n";
+    string f_str = "dolor";
+    string r_str = "FR";
+    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    print(my_doc,my_doc.begin());
 
     // cout << "Replace 'est\\nmollis' with 'XYZ\\nABCDEF' (same length, \\n in "
     //     << "same place):\n\n";
