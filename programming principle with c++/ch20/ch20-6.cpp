@@ -101,10 +101,12 @@ struct Document{
   }
   
   void find_replace(Text_iterator first, Text_iterator last,
-    const string& find_str, const string& repl_str);
+  const string& find_str, const string& repl_str);
 
   Text_iterator erase(Text_iterator p);  
   Text_iterator insert(Text_iterator p, const char& c);
+  void new_line(Text_iterator p);
+  void concat(Text_iterator& p);
 };
 
 Text_iterator Document::erase(Text_iterator p){
@@ -123,6 +125,41 @@ Text_iterator Document::insert(Text_iterator p,const char& c){
   return Text_iterator(list_it, line_it);
 }
 
+void Document::new_line(Text_iterator p){
+    // list<Line>::iterator cur_line = pos.get_line();
+    // list<Line>::iterator nxt_line = cur_line;
+    // ++nxt_line;
+    // (*nxt_line).insert((*nxt_line).begin(),pos.get_pos()+1,(*cur_line).end());
+    // (*cur_line).erase(pos.get_pos()+1,(*cur_line).end());
+
+
+  list<Line>::iterator curr_line = p.get_line();
+  list<Line>::iterator next_line = curr_line;
+  Line::iterator curr_pos = p.get_pos();
+  next_line++;
+
+  // next_line = line.insert(next_line,Line{});
+  (*next_line).insert((*next_line).begin(),p.get_pos()+1,(*curr_line).end());
+  (*curr_line).erase(p.get_pos()+1,(*curr_line).end());
+  // return Text_iterator(next_line,(*next_line).begin());
+}
+
+void Document::concat(Text_iterator& p){
+  list<Line>::iterator curr_line = p.get_line();
+  list<Line>::iterator next_line = curr_line;
+  next_line++;
+  Line::iterator curr_pos = p.get_pos();
+
+  int index = p.get_pos() - (*curr_line).begin();
+
+  (*curr_line).insert((*curr_line).end(),(*next_line).begin(),(*next_line).end());
+  p = Text_iterator(curr_line,(*curr_line).begin() + index);
+  line.erase(next_line);
+  /*
+  
+  */
+}
+
 void print(Document& d);
 
 void print(Document& d, Text_iterator p);
@@ -139,18 +176,17 @@ void Document::find_replace(Text_iterator first, Text_iterator last, const strin
     cout << find_length << repl_length;
 
     while(repl_start != repl_str.end() && find_start != find_str.end()){
-      while(repl_start != repl_str.end()){
-        // if(*repl_start == '\n')
-        // if(*find_start == '\n')
-        *pos = *repl_start;
-        ++repl_start;
-        ++find_start;
-        ++pos;
-      }
+      *pos = *repl_start;
+      if(*repl_start == '\n'){ new_line(pos); }
+      if(*find_start == '\n'){ concat(pos); }
+      ++repl_start;
+      ++find_start;
+      ++pos;
     }
 
     if(find_length >= repl_length){
       while(find_start != find_str.end()){
+        if(*find_start == '\n'){ concat(pos); }
         pos = erase(pos);
         ++find_start;
       }
@@ -160,7 +196,7 @@ void Document::find_replace(Text_iterator first, Text_iterator last, const strin
     // -> find에서 줄 바꿈 or 찾은거에서 줄 바꿈
     else{
         while(repl_start != repl_str.end()){
-        if((*repl_start)=='\n'){ }
+        if((*repl_start)=='\n'){ new_line(pos); }
         pos = insert(pos,*repl_start);
         ++pos;
         ++repl_start;
@@ -188,7 +224,7 @@ void print(Document& d)
 }
 
 void print(Document& d, Text_iterator p){
-  for(;p!=d.end();++p)cout << *p;
+  for(;p!=d.end();++p)cout <<*p ;
   cout << '\n';
 }
 
@@ -240,51 +276,51 @@ try {
     // else
     //     print(my_doc,p);
 
-    cout << "Replace 'dolor' with 'FRFRITZLI':\n\n";
-    string f_str = "dolor";
-    string r_str = "FRFRITZLI";
-    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    print(my_doc,my_doc.begin());
+    // cout << "Replace 'dolor' with 'FRFRITZLI':\n\n";
+    // string f_str = "dolor";
+    // string r_str = "FRFRITZLI";
+    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    // print(my_doc,my_doc.begin());
 
     // cout << "Replace 'est\\nmollis' with 'XYZ\\nABCDEF' (same length, \\n in "
     //     << "same place):\n\n";
-    // f_str = "est\nmollis";
-    // r_str = "XYZ\nABCDEF";
+    // string f_str = "est\nmollis";
+    // string r_str = "XYZ\nABCDEF";
     // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
     // print(my_doc,my_doc.begin());
 
     // cout << "Replace 'Morbi\\ndapibus' with 'MORBI DAPIBUS' (same length, \\n is "
     //     << "removed):\n\n";
-    // f_str = "Morbi\ndapibus";
-    // r_str = "MORBI DAPIBUS";
+    // string f_str = "Morbi\ndapibus";
+    // string r_str = "MORBI DAPIBUS";
     // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
     // print(my_doc,my_doc.begin());
 
-    // cout << "Replace 'turpis' with 'TU\\nPIS' (same length, \\n is added):\n\n";
-    // f_str = "turpis";
-    // r_str = "TU\nPIS";
-    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    // print(my_doc,my_doc.begin());
+    cout << "Replace 'turpis' with 'TU\\nPIS' (same length, \\n is added):\n\n";
+    string f_str = "turpis";
+    string r_str = "TU\nPIS";
+    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    print(my_doc,my_doc.begin());
 
-    // cout << "Replace 'Proin\\neget' with 'ABC\\nDEF\\nGHI' (different length, "
-    //     << "\\n in different places, extra \\n):\n\n";
-    // f_str = "Proin\neget";
-    // r_str = "ABC\nDEF\nGHI";
-    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    // print(my_doc,my_doc.begin());
+    cout << "Replace 'Proin\\neget' with 'ABC\\nDEF\\nGHI' (different length, "
+        << "\\n in different places, extra \\n):\n\n";
+    f_str = "Proin\neget";
+    r_str = "ABC\nDEF\nGHI";
+    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    print(my_doc,my_doc.begin());
 
-    // cout << "Replace complete third line plus word before and after with "
-    //     << "\\nTHIRDLINE\\n:\n\n";
-    // f_str = "massa\nposuere lorem, sed placerat orci tortor quis leo.\nDonec ";
-    // r_str = "\nTHIRDLINE\n";
-    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    // print(my_doc,my_doc.begin());
+    cout << "Replace complete third line plus word before and after with "
+        << "\\nTHIRDLINE\\n:\n\n";
+    f_str = "massa\nposuere lorem, sed placerat orci tortor quis leo.\nDonec ";
+    r_str = "\nTHIRDLINE\n";
+    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    print(my_doc,my_doc.begin());
 
-    // cout << "Replace 'et' with 'MARATHON' (multiple occurrences):\n\n";
-    // f_str = "et";
-    // r_str = "MARATHON";
-    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    // print(my_doc,my_doc.begin());
+    cout << "Replace 'et' with 'MARATHON' (multiple occurrences):\n\n";
+    f_str = "et";
+    r_str = "MARATHON";
+    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    print(my_doc,my_doc.begin());
 
     // cout << "Number of characters in this document: "
     //     << char_count(my_doc) << "\n";
