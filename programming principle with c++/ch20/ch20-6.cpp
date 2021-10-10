@@ -251,6 +251,96 @@ Text_iterator find_txt(Text_iterator first, Text_iterator last, const string& fi
   return last;
 }
 
+bool is_whitespace(char c, const string& white){
+  string::const_iterator white_char = white.begin();
+  while(white_char!=white.end()){
+    if(*white_char == c) return true;
+    ++white_char;
+  }
+  return false;
+}
+
+int char_count(Document& d){
+  Text_iterator first = d.begin();
+  Text_iterator last = d.end();
+  int cnt = 0;
+  while(first!= last){
+    cnt ++;
+    ++first;
+  }
+  return cnt;
+}
+
+int file_word_count(string fname){
+  ifstream ifs(fname.c_str());
+  string c;
+  int cnt = 0;
+  while(ifs >> c){
+    cnt ++;
+  }
+  return cnt;
+}
+
+int word_count1(Document& d){
+  Text_iterator first = d.begin();
+  Text_iterator last = d.end();
+  int cnt = 0;
+  string fname = "chapter20_ex09_tmp.txt";
+  ofstream ff(fname.c_str());
+
+  while(first!=last){
+    ff << *first;
+    ++first;
+  }
+  ff.close();
+
+  cnt = file_word_count(fname);
+  remove(fname.c_str());
+  return cnt;
+}
+
+int word_count2(Document& d){
+  Text_iterator first = d.begin();
+  Text_iterator last = d.end();
+  int cnt = 0;
+  string fname = "chapter20_ex09_tmp.txt";
+  ofstream ff(fname.c_str());
+
+  while(first!=last){
+    if(isalpha(*first)) ff<<*first;
+    else{
+      ff << " ";
+    }
+    ++first;
+  }
+  ff.close();
+
+  cnt = file_word_count(fname);
+  remove(fname.c_str());
+  return cnt;
+}
+
+int word_count3(Document&d, const string& white){
+  Text_iterator first = d.begin();
+  Text_iterator last = d.end();
+  int cnt = 0;
+  string fname = "chapter20_ex09_tmp.txt";
+  ofstream ff(fname.c_str());
+
+  while(first!=last){
+    if(is_whitespace(*first,white)) ff << " ";
+    else{
+      ff<<*first;
+    }
+    ++first;
+  }
+  ff.close();
+
+  cnt = file_word_count(fname);
+  remove(fname.c_str());
+  return cnt;
+}
+
 int main()
 try {
     string ifname = "chapter20_ex06_in.txt";
@@ -296,43 +386,43 @@ try {
     // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
     // print(my_doc,my_doc.begin());
 
-    cout << "Replace 'turpis' with 'TU\\nPIS' (same length, \\n is added):\n\n";
-    string f_str = "turpis";
-    string r_str = "TU\nPIS";
-    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    print(my_doc,my_doc.begin());
+    // cout << "Replace 'turpis' with 'TU\\nPIS' (same length, \\n is added):\n\n";
+    // string f_str = "turpis";
+    // string r_str = "TU\nPIS";
+    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    // print(my_doc,my_doc.begin());
 
-    cout << "Replace 'Proin\\neget' with 'ABC\\nDEF\\nGHI' (different length, "
-        << "\\n in different places, extra \\n):\n\n";
-    f_str = "Proin\neget";
-    r_str = "ABC\nDEF\nGHI";
-    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    print(my_doc,my_doc.begin());
+    // cout << "Replace 'Proin\\neget' with 'ABC\\nDEF\\nGHI' (different length, "
+    //     << "\\n in different places, extra \\n):\n\n";
+    // f_str = "Proin\neget";
+    // r_str = "ABC\nDEF\nGHI";
+    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    // print(my_doc,my_doc.begin());
 
-    cout << "Replace complete third line plus word before and after with "
-        << "\\nTHIRDLINE\\n:\n\n";
-    f_str = "massa\nposuere lorem, sed placerat orci tortor quis leo.\nDonec ";
-    r_str = "\nTHIRDLINE\n";
-    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    print(my_doc,my_doc.begin());
+    // cout << "Replace complete third line plus word before and after with "
+    //     << "\\nTHIRDLINE\\n:\n\n";
+    // f_str = "massa\nposuere lorem, sed placerat orci tortor quis leo.\nDonec ";
+    // r_str = "\nTHIRDLINE\n";
+    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    // print(my_doc,my_doc.begin());
 
-    cout << "Replace 'et' with 'MARATHON' (multiple occurrences):\n\n";
-    f_str = "et";
-    r_str = "MARATHON";
-    my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
-    print(my_doc,my_doc.begin());
+    // cout << "Replace 'et' with 'MARATHON' (multiple occurrences):\n\n";
+    // f_str = "et";
+    // r_str = "MARATHON";
+    // my_doc.find_replace(my_doc.begin(),my_doc.end(),f_str,r_str);
+    // print(my_doc,my_doc.begin());
 
-    // cout << "Number of characters in this document: "
-    //     << char_count(my_doc) << "\n";
+    cout << "Number of characters in this document: "
+        << char_count(my_doc) << "\n";
 
-    // cout << "Number of words (whitespace-separated) in this document: "
-    //     << word_count1(my_doc) << "\n";
+    cout << "Number of words (whitespace-separated) in this document: "
+        << word_count1(my_doc) << "\n";
 
-    // cout << "Number of words (sequences of alphabetic characters) in this "
-    //     << "document: " << word_count2(my_doc) << "\n";
+    cout << "Number of words (sequences of alphabetic characters) in this "
+        << "document: " << word_count2(my_doc) << "\n";
 
-    // cout << "Number of words separated by whitespace or \".!'\" in this "
-    //     << "document: " << word_count3(my_doc,".!'") << "\n";
+    cout << "Number of words separated by whitespace or \".!'\" in this "
+        << "document: " << word_count3(my_doc,".!'") << "\n";
 }
 catch (Range_error& re) {
     cerr << "bad index: " << re.index << "\n";
