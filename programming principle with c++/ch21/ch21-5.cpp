@@ -37,32 +37,52 @@ inline void error(const string& s, const string& s2)
 }
 
 template<typename In, typename T>
-int my_count(In first, In last, T& init){
-  int count = 0;
+In my_find(In first, In last, const T& val){
   while(first!=last){
-    if(*first == init){
-      count ++;
+    if(*first == val){
+      return first;
     }
     ++first;
   }
-  return count;
+  if(*first==val) return first;
+  return first;
+}
+
+template<typename In, typename T>
+int my_count(In first, In last, const T& val){
+  int cnt = 0;
+  while(first!=last){
+    if(*first == val){
+      cnt++;
+    }
+    ++first;
+  }
+  if(*first==val) cnt++;
+  return cnt;
 }
 
 int main()
 try {
     vector<int> vi;
-    for (int i = 0; i<50; ++i)
-        vi.push_back(randint(50));
+    for (int i = 0; i<10; ++i)
+        vi.push_back(randint(10));
+
+    typedef vector<int>::iterator vi_it;
+
     cout << "vi:\n";
-    for (vector<int>::iterator p = vi.begin(); p!=vi.end(); ++p)
-        cout << *p << '\n';
-    cout << "Enter value for which you want to know the count, -1 to exit: ";
-    int val;
-    while (cin>>val) {
-        if (val==-1) break;
-        int ctr = my_count(vi.begin(),vi.end(),val);
-        cout << val << " is " << ctr << " time" << (ctr!=1 ? "s " : " ")
-            << "in vi.\nNext value: ";
+    for (vi_it it = vi.begin(); it<vi.end(); ++it)
+        cout << *it << '\n';
+
+    cout << "Enter int to search for and count (-1 to quit): ";
+    int n;
+    while (cin>>n) {
+        if (n==-1) break;
+        vi_it it = my_find(vi.begin(),vi.end()-1,n);
+        int count = my_count(vi.begin(),vi.end()-1,n);
+        if (it==vi.begin() && *it!=n) cout << n << " is not in vi. Next int: ";
+        else cout << n << " is at index " << it-vi.begin()
+            << " (occurs " << count << " time" << (count==1 ? "" : "s")
+            << "). Next int: ";
     }
 }
 catch (Range_error& re) {
@@ -72,5 +92,5 @@ catch (exception& e) {
     cerr << "exception: " << e.what() << endl;
 }
 catch (...) {
-      cerr << "exception\n";
+    cerr << "exception\n";
 }
